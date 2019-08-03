@@ -1,0 +1,51 @@
+{
+  "KyberNetwork": {
+    "maxGasPrice": 50000000000,
+    "negDiffInBPS": 20
+  },
+  "FeeBurner": {
+    "reserveFees": 25,
+    "kncRate": 600,
+    "taxFeesBPS": 2000
+  },
+  "ExpectedRate": {
+    "minExpectedRateSlippage": 300,
+    "quantityFactor": 1
+  },
+  "SanityRates": {
+    "reasonableDiff": 1000
+  },
+  "WhiteList": {
+    "sgdToETHRate": 1984126984126984,
+    "defaultCategory": 0,
+    "defaultCap": 1000000000000,
+    "userCategory": 1,
+    "userCap": 1000000000000,
+    "kgtCategory": 2,
+    "kgtCap": 0,
+    "partnerCategory": 3,
+    "partnerCap": 1000000000000
+  },
+  "ConversionRates": {
+    "validDurationBlock": 1000000000,
+    "indices": [0, 0, 0, 0]
+  },
+  "PermissionlessOrderbookReserveLister": {
+    "unsupportedTokens": [],
+    "maxOrdersPerTrade": 5,
+    "minOrderValueUsd": 1000
+  },
+  "MockMedianizer": {
+    "DollarPerETH": 150
+  },
+  "feeSharingWallets": {
+    "bob": {
+      "wallet": "accounts[7]",
+      "fees": 4000
+    },
+    "alice": {
+      "wallet": "accounts[8]",
+      "fees": 5000
+    }
+  }
+}
