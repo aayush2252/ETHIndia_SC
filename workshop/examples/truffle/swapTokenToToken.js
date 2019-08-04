@@ -10,7 +10,7 @@ const NetworkProxy = artifacts.require('./KyberNetworkProxy.sol');
 const KNC = artifacts.require('./mockTokens/KyberNetworkCrystal.sol');
 const OMG = artifacts.require('./mockTokens/OmiseGo.sol');
 const MANA = artifacts.require('./mockTokens/Mana.sol');
-
+// const ST = artifacts.require('./mockTokens/securityToken.sol');
 function stdlog(input) {
   console.log(`${moment().format('YYYY-MM-DD HH:mm:ss.SSS')}] ${input}`);
 }
@@ -40,7 +40,7 @@ module.exports = async (callback) => {
   const KNCInstance = await KNC.at(KNC.address);
   const OMGInstance = await OMG.at(OMG.address);
   const MANAInstance = await MANA.at(MANA.address);
-
+  // const STInstance = await ST.at(ST.address);
   stdlog('- START -');
   stdlog(`KyberNetworkProxy (${NetworkProxy.address})`);
 
@@ -55,6 +55,25 @@ module.exports = async (callback) => {
       await MANAInstance.balanceOf(userWallet),
     )}`,
   );
+
+  // await STInstance.approve(NetworkProxy.address, web3.utils.toWei(new BN(10000)), {
+  // from: account[0],
+  // });
+
+  ({ expectedRate, slippageRate } = await NetworkProxyInstance.getExpectedRate(
+    KNC.address, // srcToken
+    OMG.address, // destToken
+    web3.utils.toWei(new BN(100)), // srcQty
+  ));
+
+  result = await NetworkProxyInstance.swapTokenToToken(
+    KNC.address, // srcToken
+    web3.utils.toWei(new BN(100)), // srcAmount
+    OMG.address, // destToken
+    expectedRate, // minConversionRate
+    { from: account[0] },
+  );
+  tx(result, 'ST <-> OMG swapTokenToToken()');
 
   // Approve the KyberNetwork contract to spend user's tokens
   await KNCInstance.approve(NetworkProxy.address, web3.utils.toWei(new BN(10000)), {

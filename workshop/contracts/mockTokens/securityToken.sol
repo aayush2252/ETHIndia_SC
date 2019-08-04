@@ -1,7 +1,7 @@
 pragma solidity >=0.4.18 <0.6.0;
 import "./SafeMath.sol";
 import "./Ownable.sol";
-contract SecurityToken is Ownable {
+contract securityToken is Ownable {
     using SafeMath for uint256;
     string private _name;
     string private _symbol;
@@ -14,8 +14,7 @@ contract SecurityToken is Ownable {
     uint256 public timeEnd= now + 1 minutes;
     // This is to comply with 12g1
     uint256 public maxInvestorCount;
-    
-    
+    address private admin;
     mapping(address => bool) public whiteListedInvestors;
     
     mapping(address => TransferRequest) public pendingTransfers;
@@ -40,13 +39,17 @@ contract SecurityToken is Ownable {
         _;
     }
 
-    function SecurityToken(string name, string symbol, uint8 decimals)
+    function securityToken(string name, string symbol, uint8 decimals)
         public
-    {
+    {  
+       
+        _totalSupply = 21 * (10 ** 24);
+
          _name = name;
         _symbol = symbol;
         _decimals = decimals;
-        _balances[msg.sender] = 10000000000000000;
+        _balances[msg.sender] = _totalSupply;
+        admin = msg.sender;
         
     }
     modifier timeBoundCheck() {
@@ -97,7 +100,7 @@ contract SecurityToken is Ownable {
         request.to = address(0);
     }
     function transfer(address _to, uint256 _value) public timeBoundCheck returns (bool) {
-        require(_verifyTransfer(msg.sender, _to, _value, true));
+        require(msg.sender == admin || _verifyTransfer(msg.sender, _to, _value, true));
         // require(transferInternal(_to, _value));
         _transfer(msg.sender, _to, _value);
         return true;
@@ -177,7 +180,7 @@ contract SecurityToken is Ownable {
         return _allowances[owner][spender];
     }
     function _verifyTransfer(address _from, address _to, uint256 _value, bool _isTransfer) internal returns (bool) {
-        require(whiteListedInvestors[_to] );
+        //require(whiteListedInvestors[_to] );
         if (_from != address(0)) {
             require(whiteListedInvestors[_from]);
         }

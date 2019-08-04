@@ -4,15 +4,17 @@ const Network = artifacts.require('./KyberNetwork.sol');
 const ConversionRates = artifacts.require('./ConversionRates.sol');
 const SanityRates = artifacts.require('./SanityRates.sol');
 const Reserve = artifacts.require('./KyberReserve.sol');
-const kyberStReserve =artifacts.require('./kyberStReserve')
+const kyberSTReserve = artifacts.require('./KyberStReserve.sol');
 const AutomatedReserve = artifacts.require('./KyberAutomatedReserve.sol');
-const OrderbookReserveLister = artifacts.require('./permissionless/PermissionlessOrderbookReserveLister.sol');
+const OrderbookReserveLister = artifacts.require(
+  './permissionless/PermissionlessOrderbookReserveLister.sol',
+);
 const FeeBurner = artifacts.require('./FeeBurner.sol');
 const WhiteList = artifacts.require('./WhiteList.sol');
 const ExpectedRate = artifacts.require('./ExpectedRate.sol');
 
 function tx(result, call) {
-  const logs = (result.logs.length > 0) ? result.logs[0] : { address: null, event: null };
+  const logs = result.logs.length > 0 ? result.logs[0] : { address: null, event: null };
 
   console.log();
   console.log(`   Calling ${call}`);
@@ -33,7 +35,7 @@ module.exports = async (deployer, network, accounts) => {
   const ConversionRatesInstance = await ConversionRates.at(ConversionRates.address);
   const SanityRatesInstance = await SanityRates.at(SanityRates.address);
   const ReserveInstance = await Reserve.at(Reserve.address);
-  const ReserveSTInstance = await kyberStReserve.at(kyberStReserve.address);
+  const ReserveSTInstance = await kyberSTReserve.at(kyberSTReserve.address);
   const AutomatedReserveInstance = await AutomatedReserve.at(AutomatedReserve.address);
   const FeeBurnerInstance = await FeeBurner.at(FeeBurner.address);
   const WhiteListInstance = await WhiteList.at(WhiteList.address);

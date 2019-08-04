@@ -10,11 +10,13 @@ const LiquidityConversionRates = artifacts.require('./LiquidityConversionRates.s
 const LiquidityConversionRatesST = artifacts.require('./LiquidityConversionRatesST.sol');
 const SanityRates = artifacts.require('./SanityRates.sol');
 const Reserve = artifacts.require('./KyberReserve.sol');
-const StReserve = artifacts.require('./KyberStReserve.sol');
+const STReserve = artifacts.require('./KyberStReserve.sol');
 const AutomatedReserve = artifacts.require('./KyberAutomatedReserve.sol');
 const OrderbookReserve = artifacts.require('./KyberOrderbookReserve.sol');
 const OrderListFactory = artifacts.require('./permissionless/OrderListFactory.sol');
-const OrderbookReserveLister = artifacts.require('./permissionless/PermissionlessOrderbookReserveLister.sol');
+const OrderbookReserveLister = artifacts.require(
+  './permissionless/PermissionlessOrderbookReserveLister.sol',
+);
 const FeeBurner = artifacts.require('./FeeBurner.sol');
 const WhiteList = artifacts.require('./WhiteList.sol');
 const ExpectedRate = artifacts.require('./ExpectedRate.sol');
@@ -26,7 +28,7 @@ const MockMedianizer = artifacts.require('./mockContracts/MockMedianizer.sol');
 const SwapEtherToToken = artifacts.require('./examples/SwapEtherToToken.sol');
 const SwapTokenToEther = artifacts.require('./examples/SwapTokenToEther.sol');
 const SwapTokenToToken = artifacts.require('./examples/SwapTokenToToken.sol');
-const ST = artifacts.require('./mockTokens/securityToken.sol')
+const ST = artifacts.require('./mockTokens/securityToken.sol');
 const Trade = artifacts.require('./examples/Trade.sol');
 
 const networkConfig = JSON.parse(fs.readFileSync('../config/network.json', 'utf8'));
@@ -35,9 +37,9 @@ const tokenConfig = JSON.parse(fs.readFileSync('../config/tokens.json', 'utf8'))
 module.exports = async (deployer, network, accounts) => {
   const admin = accounts[0];
   const kncRate = new BN(networkConfig.FeeBurner.kncRate).mul(new BN(10).pow(new BN(18)));
-  const dollarsPerETH = new BN(
-    networkConfig.MockMedianizer.DollarPerETH,
-  ).mul(new BN(10).pow(new BN(18)));
+  const dollarsPerETH = new BN(networkConfig.MockMedianizer.DollarPerETH).mul(
+    new BN(10).pow(new BN(18)),
+  );
 
   // Deploy the mock contracts
   await deployer.deploy(MockMedianizer, dollarsPerETH);

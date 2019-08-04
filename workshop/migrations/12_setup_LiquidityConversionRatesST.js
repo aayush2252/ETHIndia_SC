@@ -4,14 +4,14 @@ const BN = require('bn.js');
 const fs = require('fs');
 
 const LiquidityConversionRates = artifacts.require('./LiquidityConversionRatesST.sol');
-const AutomatedReserve = artifacts.require('./KyberSTReserve.sol');
+const AutomatedReserve = artifacts.require('./KyberStReserve.sol');
 
 const ST = artifacts.require('./mockTokens/securityToken.sol');
 
 const tokenConfig = JSON.parse(fs.readFileSync('../config/tokens.json', 'utf8'));
 
 function tx(result, call) {
-  const logs = (result.logs.length > 0) ? result.logs[0] : { address: null, event: null };
+  const logs = result.logs.length > 0 ? result.logs[0] : { address: null, event: null };
 
   console.log();
   console.log(`   Calling ${call}`);
@@ -33,34 +33,39 @@ module.exports = async (deployer, network, accounts) => {
     LiquidityConversionRates.address,
   );
   const AutomatedReserveInstance = await AutomatedReserve.at(AutomatedReserve.address);
-  const MANAInstance = await ST.at(ST.address);
+  const STInstance = await ST.at(ST.address);
 
   // Set the automated reserve address
-  tx(await LiquidityConversionRatesInstance.setReserveAddress(AutomatedReserve.address), 'setReserveAddress()');
+  tx(
+    await LiquidityConversionRatesInstance.setReserveAddress(AutomatedReserve.address),
+    'setReserveAddress()',
+  );
 
   // Transfer the required ETH/Token inventory to the automated reserve
-  const STAmount = (
-    new BN(tokenConfig.AutomatedPriceReserve.ST.Tokens)
-      .mul(new BN(10).pow(await MANAInstance.decimals()))
-  ).toString();
-  tx(await MANAInstance.transfer(AutomatedReserve.address, MANAAmount), 'transfer()');
+  const STAmount = new BN(tokenConfig.AutomatedPriceReserve.ST.Tokens)
+    .mul(new BN(10).pow(await STInstance.decimals()))
+    .toString();
+  tx(await STInstance.transfer(AutomatedReserve.address, STAmount), 'transfer()');
   tx(
-    await AutomatedReserveInstance.sendTransaction(
-      { from: admin, value: web3.utils.toWei(new BN(tokenConfig.AutomatedPriceReserve.ST.Ether)) },
-    ),
+    await AutomatedReserveInstance.sendTransaction({
+      from: admin,
+      value: web3.utils.toWei(new BN(tokenConfig.AutomatedPriceReserve.ST.Ether)),
+    }),
     'sendTransaction()',
   );
 
   // Set the liquidity parameters
-  tx(await LiquidityConversionRatesInstance.setLiquidityParams(
-    tokenConfig.AutomatedPriceReserve.ST._rInFp,
-    tokenConfig.AutomatedPriceReserve.ST._pMinInFp,
-    tokenConfig.AutomatedPriceReserve.ST._numFpBits,
-    tokenConfig.AutomatedPriceReserve.ST._maxCapBuyInWei,
-    tokenConfig.AutomatedPriceReserve.ST._maxCapSellInWei,
-    tokenConfig.AutomatedPriceReserve.ST._feeInBps,
-    tokenConfig.AutomatedPriceReserve.ST._maxTokenToEthRateInPrecision,
-    tokenConfig.AutomatedPriceReserve.ST._minTokenToEthRateInPrecision,
-  ),
-  'setLiquidityParams()');
+  tx(
+    await LiquidityConversionRatesInstance.setLiquidityParams(
+      tokenConfig.AutomatedPriceReserve.ST._rInFp,
+      tokenConfig.AutomatedPriceReserve.ST._pMinInFp,
+      tokenConfig.AutomatedPriceReserve.ST._numFpBits,
+      tokenConfig.AutomatedPriceReserve.ST._maxCapBuyInWei,
+      tokenConfig.AutomatedPriceReserve.ST._maxCapSellInWei,
+      tokenConfig.AutomatedPriceReserve.ST._feeInBps,
+      tokenConfig.AutomatedPriceReserve.ST._maxTokenToEthRateInPrecision,
+      tokenConfig.AutomatedPriceReserve.ST._minTokenToEthRateInPrecision,
+    ),
+    'setLiquidityParams()',
+  );
 };

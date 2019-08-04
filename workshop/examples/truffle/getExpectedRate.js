@@ -13,7 +13,7 @@ const OMG = artifacts.require('./mockTokens/OmiseGo.sol');
 const MANA = artifacts.require('./mockTokens/Mana.sol');
 const POLY = artifacts.require('./mockTokens/Polymath.sol');
 const SNT = artifacts.require('./mockTokens/Status.sol');
-
+const ST = artifacts.require('./mockTokens/securityToken.sol');
 function stdlog(input) {
   console.log(`${moment().format('YYYY-MM-DD HH:mm:ss.SSS')}] ${input}`);
 }
@@ -28,6 +28,15 @@ module.exports = async (callback) => {
 
   stdlog('- START -');
   stdlog(`KyberNetworkProxy (${NetworkProxy.address})`);
+
+  ({ expectedRate, slippageRate } = await NetworkProxyInstance.getExpectedRate(
+    ETH_ADDRESS, // srcToken
+    ST.address, // destToken
+    web3.utils.toWei(new BN(1)), // srcQty
+  ));
+  stdlog(
+    `ETH <-> ST getExpectedRate() = expectedRate: ${expectedRate}, slippageRate:${slippageRate}`,
+  );
 
   ({ expectedRate, slippageRate } = await NetworkProxyInstance.getExpectedRate(
     ETH_ADDRESS, // srcToken

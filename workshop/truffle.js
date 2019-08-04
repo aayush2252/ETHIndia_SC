@@ -31,7 +31,7 @@ module.exports = {
       skipDryRun: true,
     },
     kovan: {
-      provider: new HDWalletProvider(mnemonic, 'http://localhost:8545', 0, 10),
+      provider: new HDWalletProvider(mnemonic, 'https://localhost:8545', 0, 10),
       host: '127.0.0.1',
       port: 8545,
       network_id: 42,
@@ -53,9 +53,12 @@ module.exports = {
       skipDryRun: true,
     },
     ropsten: {
-      provider: new HDWalletProvider(mnemonic, 'http://localhost:8545', 0, 10),
-      host: '127.0.0.1',
-      port: 80,
+      provider: new HDWalletProvider(
+        mnemonic,
+        'https://ropsten.infura.io/v3/e56510664ecd49c4af12a3c542462a4f',
+        0,
+        10,
+      ),
       network_id: 3,
       gas: 7000000,
       gasPrice: 20000000000,
@@ -85,6 +88,8 @@ module.exports = {
       enabled: true,
       runs: 200,
     },
-    evmVersion: 'byzantium',
+    settings: {
+      evmVersion: 'byzantium',
+    },
   },
 };

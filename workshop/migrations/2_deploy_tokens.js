@@ -7,7 +7,7 @@ const ZIL = artifacts.require('./mockTokens/Zilliqa.sol');
 const MANA = artifacts.require('./mockTokens/Mana.sol');
 const POLY = artifacts.require('./mockTokens/Polymath.sol');
 const SNT = artifacts.require('./mockTokens/Status.sol');
-const ST = artifacts.require('./mockTokens/securityToken.sol')
+const ST = artifacts.require('./mockTokens/securityToken.sol');
 
 module.exports = async (deployer) => {
   // Deploy the tokens
@@ -19,4 +19,5 @@ module.exports = async (deployer) => {
   await deployer.deploy(MANA);
   await deployer.deploy(POLY);
   await deployer.deploy(SNT);
+  await deployer.deploy(ST, 'securityToken', 'STC', 2);
 };

@@ -5,12 +5,12 @@ const fs = require('fs');
 const Network = artifacts.require('./KyberNetwork.sol');
 const LiquidityConversionRates = artifacts.require('./LiquidityConversionRatesST.sol');
 const SanityRates = artifacts.require('./SanityRates.sol');
-const AutomatedReserve = artifacts.require('./KyberSTReserve.sol');
+const AutomatedReserve = artifacts.require('./KyberStReserve.sol');
 
 const ST = artifacts.require('./mockTokens/securityToken.sol');
 
 function tx(result, call) {
-  const logs = (result.logs.length > 0) ? result.logs[0] : { address: null, event: null };
+  const logs = result.logs.length > 0 ? result.logs[0] : { address: null, event: null };
 
   console.log();
   console.log(`   Calling ${call}`);
@@ -41,7 +41,10 @@ module.exports = async (deployer, network, accounts) => {
   );
 
   // Add reserve to network
-  tx(await NetworkInstance.addReserve(AutomatedReserve.address, false, { from: operator }), 'addReserve()');
+  tx(
+    await NetworkInstance.addReserve(AutomatedReserve.address, false, { from: operator }),
+    'addReserve()',
+  );
 
   // Add the withdrawal address for each token
   tx(
